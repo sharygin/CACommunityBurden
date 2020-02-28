@@ -52,10 +52,12 @@ critNx<-10000
 critDx<-700
 
 ## 1.3 	paths 
-setwd("C:/Users/fieshary/projects/CACommunityBurden")
+#setwd("C:/Users/fieshary/projects/CACommunityBurden")
 myDrive <- getwd()
 myPlace <- paste0(myDrive,"/myCBD") 
 upPlace <- paste0(myDrive,"/myUpstream") 
+mySecure <- "H:/0.Secure.Data/myData"
+dofSecure <- "d:/users/fieshary/projects/vry-lt/dx"
 
 ## 1.4 	links
 #.ckey	    <- read_file(paste0(upPlace,"/upstreamInfo/census.api.key.txt")) # census API key
@@ -68,8 +70,8 @@ upPlace <- paste0(myDrive,"/myUpstream")
 .mssacfips	<- paste0(upPlace,"/lifeTables/dataIn/mssa13cfips.dta") # 2013 MSSA to county
 .countycfips <- paste0(upPlace,"/lifeTables/dataIn/countycfips.dta") # county name to county FIPS in GEOID format
 if (whichDeaths=="fake") .deaths		<- paste0(upPlace,"/upData/cbdDat0SAMP.R") 
-if (whichDeaths=="real") .deaths		<- "h:/0.Secure.Data/myData/cbdDat0FULL.R" 
-if (whichDeaths=="dof")  .deaths 		<- "c:/users/fieshary/desktop/lt/dx/dof_deaths_mi.dta" 
+if (whichDeaths=="real") .deaths		<- paste0(mySecure,"/cbdDat0FULL.R" 
+if (whichDeaths=="dof")  .deaths 		<- paste0(dofSecure,"/dof_deaths_mi.dta" 
 if (whichPop=="dof") .pop 				<- paste0(upPlace,"/lifeTables/dataIn/dof_ic10pc19.dta")  
 if (whichPop=="pep") .pop				<- paste0(upPlace,"/lifeTables/dataIn/pep_ic10pc18_special.dta") 
 
@@ -365,3 +367,31 @@ mx.mssa[sex=="TOTAL" & race7=="TOTAL",.(Nx=sum(Nx),Dx=sum(Dx)),by=c("sex","year"
 lt.mssa[x==0 & sex=="TOTAL" & race7=="TOTAL" & (year %in% c(2010,2017)),
 			c("comID","sex","year","race7","ex","exlow","exhigh")] 
 
+## 7.3	NOTES	----------------------------------------------------------
+
+# Life tables for communities, counties and states are generated from age specific 
+# mortality rates, which are the quotient of deaths during a calendar year to the 
+# and exposure, approximated by the population of the same age at the midpoint of 
+# the year (July 1). Age structured population data for tracts and communities are
+# estimated using data from the American Community Survey, 5-year sample (table 
+# B01001; multiple years). County and state age population by age are estimated by 
+# the Demographic Research Unit, CA Department of Finance. Deaths data are based 
+# on 100% extracts from the vital statistics reporting system, CA Department of 
+# Public Health. Mortality and exposure data were combined for small groups:
+# 5 years of combined population and mortality data for each annual community table, 
+# as well as to county tables by race. 3 years of combined data for county tables
+# without race detail. Life tables with fewer than 700 deaths of 10,000 PY were 
+# censored. Intra-age mortality (nax) was calculated for ages below 5 using values
+# from a similar population (CA life table for 2010-17 from USMDB) and by the 
+# midpoint of the age interval for other age groups except the last (1/mx or a 
+# value from USMDB if mx is zero or undefined). Standard errors were calculated 
+# for age specific probabilities of death and used to calculate 95% confidence
+# intervals for life expectancy (Chiang 1984; Eayres and Williams 2004).
+#
+# United States Mortality DataBase. University of California, Berkeley (USA). 
+#			Available at usa.mortality.org. Downloaded 2020-02-27.
+#
+# Chiang, C.L. 1984. The Life Table and its Applications. Robert E Krieger Publ Co., pp. 153-168.
+#
+# Eayres D, and E.S.E. Williams. Evaluation of methodologies for small area life expectancy estimation.
+# 	Journal of Epidemiology & Community Health 2004;58:243-249.
